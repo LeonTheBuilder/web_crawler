@@ -1,0 +1,10 @@
+{
+  "ignore": [
+    "gen",
+    "node_modules",
+    "tests",
+    "*.g.*",
+    "*.gen.*",
+    "tmp"
+  ]
+}

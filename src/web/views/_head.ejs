@@ -1,0 +1,28 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CapOfPro</title>
+    <link href="/daisyui@5.css" rel="stylesheet" type="text/css"/>
+    <script src="/browser@4.js"></script>
+    <script type="text/javascript" src="/vue.min.js"></script>
+    <style>
+        <%- include('_app.css'); %>
+    </style>
+    <script type="text/javascript">
+        document.documentElement.setAttribute("data-theme", "light");
+        <%- include(`${appcfg.nodeModulesPath}/aframework/webpage/js/_jslib.js`); %>
+        <%- include('apistub.gen.js'); %>
+        // APICaller.addResponseInterceptor(async function (response) {
+        //     if (response.code === 'need_login') {
+        //         toastWarn('Please login');
+        //         window.location.href = '/login';
+        //         return true;
+        //     }
+        // });
+    </script>
+    <%- include(`${appcfg.nodeModulesPath}/aframework/webpage/_toast.ejs`); %>
+</head>
+<body class="flex justify-center">
+<div class="flex flex-col h-full lg:w-2/3 mx-auto p-2 md:p-3 space-y-2 overflow-y-auto custom-scrollbar"
+     id="mainContainer">
+    <!------>

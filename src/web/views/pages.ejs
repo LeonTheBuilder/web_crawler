@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('_head.ejs'); %>
+<%- include(`${appcfg.nodeModulesPath}/aframework/web/_confirmDialog.ejs`); %>
+<!---------------------------------------------------------------------------------------------------------------->
+<div class="overflow-x-auto bg-base-200  rounded-box w-full">
+    <table class="table table-xs">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Url</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="page in pages">
+            <th>${page.pageTitle || "无标题"}</th>
+            <td><a :href="page.pageUrl" target="_blank">${page.pageUrl}</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!---------------------------------------------------------------------------------------------------------------->
+
+<%- include('_bottom.ejs'); %>
+<script type="text/javascript">
+    <%- include('pages.js'); %>
+</script>
+</html>
