@@ -12,15 +12,13 @@ cfg.genFolder = path.join(__dirname, 'gen');
 cfg.typeJsFolder = __dirname;
 cfg.autowire.folders = [
     __dirname,
-    path.join(nodeModulesPath, "user_service"),
-    path.join(nodeModulesPath, "ai_service"),
 ];
 //----------------------------------------------------------------
 cfg.web.port = 3015;
 cfg.web.view.viewFolder = require('./web/views/viewfolder');
 //----------------------------------------------------------------
-cfg.mysql.database = 'capofpro';
-cfg.mysql.serverTimezone = 'Asia/Shanghai';
+cfg.mysql.enabled = false;
+cfg.sqlite.enabled = true;
 //----------------------------------------------------------------
 cfg.app.storageRoot = process.env.APP_STORAGE_ROOT || '/Users/chence/dev/tmp';
 cfg.app.chromeExecutablePath = process.env.APP_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';

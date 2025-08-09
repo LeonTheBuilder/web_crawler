@@ -1,16 +1,17 @@
 // 大宗交易
 class TongHuaShunStockDzjyFetch {
-    //
-    isFetch = true;
 
-    async instructs() {
+    async fetch() {
+        //
+        const chrome = this.chromeManager.getChrome({});
+        const page = await chrome.newPage();
         // 龙虎榜（涨跌幅排行）
-        await gotoUrl('https://data.10jqka.com.cn/market/dzjy/');
-        await sleepRandom(3000, 4000);
+        await page.gotoUrl('https://data.10jqka.com.cn/market/dzjy/');
+        await page.sleepRandom(3000, 4000);
         // 等待加载完成
-        await idle();
-
-        const tableData = await page.evaluate(() => {
+        await page.idle();
+        //
+        const tableData = await page._page.evaluate(() => {
 
             const tableSelector = '#J-ajax-main > table';
 
@@ -46,7 +47,6 @@ class TongHuaShunStockDzjyFetch {
                 rowList
             };
         });
-
     }
 
 }

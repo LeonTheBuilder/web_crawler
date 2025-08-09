@@ -5,7 +5,7 @@ class ChromeManager {
     async getChrome(args) {
         //
         const {
-            id
+            id = 'default'
         } = args;
         //
 

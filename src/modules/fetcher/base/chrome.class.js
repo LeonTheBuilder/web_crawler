@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const {VM} = require('vm2');
+const PageWrapper = require('./page.wrapper');
 
 //
 class Chrome {
@@ -39,13 +39,14 @@ class Chrome {
         });
 
 
-        this.page = await this.browser.newPage();
+    }
 
-        await this.page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    async newPage() {
 
-
+        const page = await this.browser.newPage();
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
         // 隐藏WebDriver属性
-        await this.page.evaluateOnNewDocument(() => {
+        await page.evaluateOnNewDocument(() => {
             // 装 navigator.webdriver
             Object.defineProperty(navigator, 'webdriver', {
                 get: () => undefined,
@@ -70,6 +71,11 @@ class Chrome {
                 return getContext.apply(this, arguments);
             };
         });
+
+        //
+        const pageWrapper = new PageWrapper();
+        pageWrapper._page = page;
+        return pageWrapper;
     }
 
     async stop() {

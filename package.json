@@ -13,7 +13,6 @@
   "dependencies": {
     "aframework": "git+https://github.com/LeonTheBuilder/aframework.git",
     "cheerio": "^1.1.0",
-    "puppeteer": "^24.10.0",
-    "vm2": "^3.9.19"
+    "puppeteer": "^24.10.0"
   }
 }
