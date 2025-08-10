@@ -1,8 +1,12 @@
 class TongHuaShunStockDetailFetch {
-    async fetch() {
+    async fetch(args) {
         //
-        const chrome = this.chromeManager.getChrome({});
+        const chrome = await this.chromeManager.getChrome({});
         const page = await chrome.newPage();
+
+        await page.gotoUrl('https://www.bing.com');
+        await page.sleepRandom(3000, 4000);
+        await page.close();
     }
 }
 

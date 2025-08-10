@@ -18,7 +18,7 @@ class ChromeManager {
             userDataPath: this.path.join(this.cfg.app.storageRoot, id),
             self: this
         });
-        await chrome.start();
+        await newChrome.start();
         this._chromeMap[id] = newChrome;
         return newChrome;
     }

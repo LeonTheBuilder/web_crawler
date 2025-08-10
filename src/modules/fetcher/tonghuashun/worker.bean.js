@@ -11,15 +11,8 @@ class TongHuaShunWorker {
     }
 
     async fetch() {
-        // 大宗交易
-        const chromeId = 'tonghuashun';
-        await this.fetchRunner.runFetch({
-            chromeId: chromeId,
-            fetch: this.tongHuaShunStockDzjyFetch
-        });
-
-        // 大单交易
-        
+        await this.tongHuaShunStockDzjyFetch.fetch();
+        await this.tongHuaShunStockDdzzFetch.fetch();
     }
 
 }
