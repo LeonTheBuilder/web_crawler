@@ -302,10 +302,10 @@ class PageWrapper {
     }
 
 
-    async wheelScrollDownOneScreen() {
-        await this.log('wheelScrollDownOneScreen');
+    async wheelScrollDownScreens(n = 1) {
+        await this.log('wheelScrollDownScreens');
         const {height} = await this.getScreenWidthHeight();
-        await this.wheelScroll(height);
+        await this.wheelScroll(height * n);
     }
 
     async wheelScroll(height) {

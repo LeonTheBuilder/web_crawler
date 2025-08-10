@@ -12,7 +12,7 @@ class TongHuaShunWorker {
 
     async fetch() {
         await this.tongHuaShunStockDzjyFetch.fetch();
-        await this.tongHuaShunStockDdzzFetch.fetch();
+        // await this.tongHuaShunStockDdzzFetch.fetch();
     }
 
 }

@@ -2,8 +2,9 @@
 class TongHuaShunStockDzjyFetch {
 
 
-    async dates2fetch() {
-        return '2025-08-08';
+    async date2fetch() {
+        const date = this.stockTradingDay.getTradingDay()
+        return date;
     }
 
     async fetch(args) {
@@ -14,20 +15,25 @@ class TongHuaShunStockDzjyFetch {
         // 龙虎榜（涨跌幅排行）
         await page.gotoUrl('https://data.10jqka.com.cn/market/dzjy/');
         // -----------------------------------------------------------------------
-        let hasMorePage = true;
-        while (hasMorePage) {
+        const retData = {};
+        retData.stockMap = {};
+        retData.rows = [];
+        // -----------------------------------------------------------------------
+        let hasMoreData = true;
+        while (hasMoreData) {
             // 等待加载完成
             await page.idle();
             await page.sleepRandom(3000, 4000);
-            hasMorePage = await this.processTableData(page);
-
+            hasMoreData = await this.processTableData({page, retData});
             //
-            if (!hasMorePage) {
-                this.log.info('没有更多数据了 hasMorePage false');
+            if (!hasMoreData) {
+                this.log.info('没有更多数据了 hasMoreData false');
                 break;
             }
             //
-            hasMorePage = await page.evaluate(() => {
+            await page.wheelScrollDownScreens(3);
+            //
+            hasMoreData = await page.evaluate(() => {
                 // 先获取所有 class 为 changePage 的 a 标签
                 const links = document.querySelectorAll('a.changePage');
                 // 筛选出文本内容为 '下一页' 的元素
@@ -40,7 +46,7 @@ class TongHuaShunStockDzjyFetch {
                 return false; // 未找到时返回 null
             });
 
-            this.log.info('hasMorePage', hasMorePage);
+            this.log.info('hasMoreData', hasMoreData);
             //
         }
         // -----------------------------------------------------------------------
@@ -49,15 +55,16 @@ class TongHuaShunStockDzjyFetch {
         await page.close();
     }
 
-    async processTableData(page) {
+    async processTableData(args) {
 
-        const dateStr = await this.dates2fetch();
-
+        //
+        const {page, retData} = args;
+        //
+        const dateStr = await this.date2fetch();
         //
         const tableData = await page.evaluate(async () => {
 
             const tableSelector = '#J-ajax-main > table';
-
             //
             const table = document.querySelector(tableSelector);
             const headers = table.querySelectorAll('th');
@@ -122,12 +129,24 @@ class TongHuaShunStockDzjyFetch {
                 buyDept,
                 sellDept
             ] = row;
+
+            //
+
+
             //
             if (date !== dateStr) {
                 this.log.info('日期不一致 date !== dateStr', date, dateStr)
                 hasMoreData = false;
+                break;
             }
-
+            //
+            retData.rows.push(row);
+            //
+            if (!retData.stockMap[code]) {
+                const stockFetchData = await this.tongHuaShunStockDetailFetch.fetch({code});
+                retData.stockMap[code] = stockFetchData;
+            }
+            //
         }
         //
         return hasMoreData;

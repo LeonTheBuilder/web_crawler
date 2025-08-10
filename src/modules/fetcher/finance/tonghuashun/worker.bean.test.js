@@ -1,4 +1,4 @@
-const loadContext = require("../../../loadcontext");
+const loadContext = require("../../../../loadcontext");
 
 it('tongHuaShunWorker.fetch', async () => {
     const a = await loadContext();
