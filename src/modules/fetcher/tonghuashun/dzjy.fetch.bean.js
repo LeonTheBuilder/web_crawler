@@ -1,18 +1,60 @@
 // 大宗交易
 class TongHuaShunStockDzjyFetch {
 
+
+    async dates2fetch() {
+        return '2025-08-08';
+    }
+
     async fetch(args) {
 
-        //
+        // -----------------------------------------------------------------------
         const chrome = await this.chromeManager.getChrome({});
         const page = await chrome.newPage();
         // 龙虎榜（涨跌幅排行）
         await page.gotoUrl('https://data.10jqka.com.cn/market/dzjy/');
-        await page.sleepRandom(3000, 4000);
-        // 等待加载完成
-        await page.idle();
+        // -----------------------------------------------------------------------
+        let hasMorePage = true;
+        while (hasMorePage) {
+            // 等待加载完成
+            await page.idle();
+            await page.sleepRandom(3000, 4000);
+            hasMorePage = await this.processTableData(page);
+
+            //
+            if (!hasMorePage) {
+                this.log.info('没有更多数据了 hasMorePage false');
+                break;
+            }
+            //
+            hasMorePage = await page.evaluate(() => {
+                // 先获取所有 class 为 changePage 的 a 标签
+                const links = document.querySelectorAll('a.changePage');
+                // 筛选出文本内容为 '下一页' 的元素
+                for (const link of links) {
+                    if (link.textContent.trim() === '下一页') {
+                        link.click(); // 返回找到的元素
+                        return true;
+                    }
+                }
+                return false; // 未找到时返回 null
+            });
+
+            this.log.info('hasMorePage', hasMorePage);
+            //
+        }
+        // -----------------------------------------------------------------------
+
         //
-        const tableData = await page._page.evaluate(async () => {
+        await page.close();
+    }
+
+    async processTableData(page) {
+
+        const dateStr = await this.dates2fetch();
+
+        //
+        const tableData = await page.evaluate(async () => {
 
             const tableSelector = '#J-ajax-main > table';
 
@@ -50,12 +92,45 @@ class TongHuaShunStockDzjyFetch {
         });
 
 
+        let hasMoreData = true;
+        //
         for (const row of tableData.rowList) {
-            await this.tongHuaShunStockDetailFetch.fetch();
+            // 序号|交易日期|股票代码|股票简称|最新价|成交价格|成交量（万股）|溢价率|买方营业部|卖方营业部
+
+            // [
+            //     '45',
+            //     '2025-08-08',
+            //     '300340',
+            //     '科恒股份',
+            //     '17.74',
+            //     '13.81',
+            //     '30.00',
+            //     '-22.15%',
+            //     '国投证券股份有限公司上海樱花路证券营业部',
+            //     '华福证券有限责任公司广东分公司'
+            // ]
+
+            const [
+                index,
+                date,
+                code,
+                name,
+                price,
+                dealPrice,
+                volume,
+                premium,
+                buyDept,
+                sellDept
+            ] = row;
+            //
+            if (date !== dateStr) {
+                this.log.info('日期不一致 date !== dateStr', date, dateStr)
+                hasMoreData = false;
+            }
+
         }
-
-
-        await page.close();
+        //
+        return hasMoreData;
     }
 
 }

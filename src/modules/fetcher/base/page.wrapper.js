@@ -301,6 +301,13 @@ class PageWrapper {
         await this.wheelScroll(height);
     }
 
+
+    async wheelScrollDownOneScreen() {
+        await this.log('wheelScrollDownOneScreen');
+        const {height} = await this.getScreenWidthHeight();
+        await this.wheelScroll(height);
+    }
+
     async wheelScroll(height) {
         await this.log('wheelScroll', height);
         // 随机化滚动次数（3到6次之间）
@@ -352,6 +359,10 @@ class PageWrapper {
 
     async type(text) {
         await this._page.keyboard.type(text, {delay: 50});
+    }
+
+    async evaluate(func) {
+        return await this._page.evaluate(func);
     }
 
     async close() {
