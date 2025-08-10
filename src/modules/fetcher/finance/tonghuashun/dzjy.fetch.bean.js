@@ -17,7 +17,7 @@ class TongHuaShunStockDzjyFetch {
         // -----------------------------------------------------------------------
         const retData = {};
         retData.stockMap = {};
-        retData.rows = [];
+        retData.trades = [];
         // -----------------------------------------------------------------------
         let hasMoreData = true;
         while (hasMoreData) {
@@ -53,6 +53,8 @@ class TongHuaShunStockDzjyFetch {
 
         //
         await page.close();
+        //
+        return retData;
     }
 
     async processTableData(args) {
@@ -140,7 +142,7 @@ class TongHuaShunStockDzjyFetch {
                 break;
             }
             //
-            retData.rows.push(row);
+            retData.trades.push(row);
             //
             if (!retData.stockMap[code]) {
                 const stockFetchData = await this.tongHuaShunStockDetailFetch.fetch({code});
