@@ -11,7 +11,13 @@ class TongHuaShunWorker {
     }
 
     async fetch() {
-        await this.tongHuaShunStockDzjyFetch.fetch();
+        const dzjyData = await this.tongHuaShunStockDzjyFetch.fetch();
+
+        await this.httpSender.send({
+            dataType: 'dzjyData',
+            data: dzjyData
+        });
+
         // await this.tongHuaShunStockDdzzFetch.fetch();
     }
 
