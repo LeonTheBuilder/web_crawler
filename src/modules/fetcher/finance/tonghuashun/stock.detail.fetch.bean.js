@@ -142,8 +142,65 @@ class TongHuaShunStockDetailFetch {
             return data;
         });
 
-        this.log.info(stockBasicInfo);
-        return stockBasicInfo;
+
+        // convert map
+        /**
+         * 当前的 stockBasicInfo 是下面的格式
+         * {
+         *         "今开": "9.18",
+         *         "成交量": "1166.4万",
+         *         "振幅": "1.42%",
+         *         "最高": "9.22",
+         *         "成交额": "1.07亿",
+         *         "换手": "0.45%",
+         *         "最低": "9.09",
+         *         "总市值：亿": "237.29",
+         *         "市净率": "2.35",
+         *         "昨收": "9.18",
+         *         "流通市值：亿": "236.99",
+         *         "市盈率(动)": "35.19",
+         *         "表决权差异": "否",
+         *         "交易状态": "连续竞价"
+         *       }
+         *
+         *  转化为如下格式
+         *  {
+         *   "openPrice": "9.18",         // 今开
+         *   "tradingVolume": "1166.4万",  // 成交量
+         *   "amplitude": "1.42%",         // 振幅
+         *   "highestPrice": "9.22",       // 最高
+         *   "turnover": "1.07亿",         // 成交额
+         *   "turnoverRate": "0.45%",      // 换手
+         *   "lowestPrice": "9.09",        // 最低
+         *   "totalMarketValue": "237.29亿", // 总市值：亿
+         *   "priceToBookRatio": "2.35",   // 市净率
+         *   "previousClose": "9.18",      // 昨收
+         *   "circulatingMarketValue": "236.99亿", // 流通市值：亿
+         *   "priceEarningsRatioDynamic": "35.19", // 市盈率(动)
+         *   "votingRightDifference": "否", // 表决权差异
+         *   "tradingStatus": "连续竞价"   // 交易状态
+         * }
+         *
+         *
+         */
+
+        const stockBasicInfoConverted = {
+            openPrice: stockBasicInfo['今开'],
+            tradingVolume: stockBasicInfo['成交量'],
+            amplitude: stockBasicInfo['振幅'],
+            highestPrice: stockBasicInfo['最高'],
+            turnover: stockBasicInfo['成交额'],
+            turnoverRate: stockBasicInfo['换手'],
+            lowestPrice: stockBasicInfo['最低'],
+            totalMarketValue: stockBasicInfo['总市值：亿'],
+            priceToBookRatio: stockBasicInfo['市净率'],
+            previousClose: stockBasicInfo['昨收'],
+            circulatingMarketValue: stockBasicInfo['流通市值：亿'],
+            priceEarningsRatioDynamic: stockBasicInfo['市盈率(动)'],
+            votingRightDifference: stockBasicInfo['表决权差异'],
+            tradingStatus: stockBasicInfo['交易状态']
+        };
+        return stockBasicInfoConverted;
     }
 }
 
