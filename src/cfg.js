@@ -6,16 +6,13 @@ const cfg = cfgdef();
 const nodeModulesPath = path.join(__dirname, "..", 'node_modules');
 cfg.nodeModulesPath = nodeModulesPath; // ejs 页面里面使用了这个路径
 //----------------------------------------------------------------
-cfg.app.name = 'capofpro';
-cfg.loadContextFilePath = path.join(__dirname, 'loadcontext.js');
-cfg.genFolder = path.join(__dirname, 'gen');
-cfg.typeJsFolder = __dirname;
+cfg.app.name = 'web_crawler';
+cfg.app.rootFolder = path.join(__dirname, '..');
 cfg.autowire.folders = [
     __dirname,
 ];
 //----------------------------------------------------------------
 cfg.web.port = 3015;
-cfg.web.view.viewFolder = require('./web/views/viewfolder');
 //----------------------------------------------------------------
 cfg.mysql.enabled = false;
 cfg.sqlite.enabled = true;

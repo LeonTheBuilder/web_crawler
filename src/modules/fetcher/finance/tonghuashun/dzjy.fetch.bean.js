@@ -9,6 +9,12 @@ class TongHuaShunStockDzjyFetch {
 
     async fetch(args) {
 
+        const {
+            pageSize = 10000
+        } = args;
+        //
+
+
         // -----------------------------------------------------------------------
         const chrome = await this.chromeManager.getChrome({});
         const page = await chrome.newPage();
@@ -24,7 +30,7 @@ class TongHuaShunStockDzjyFetch {
             // 等待加载完成
             await page.idle();
             await page.sleepRandom(3000, 4000);
-            hasMoreData = await this.processTableData({page, retData});
+            hasMoreData = await this.processTableData({page, retData, pageSize});
             //
             if (!hasMoreData) {
                 this.log.info('没有更多数据了 hasMoreData false');
@@ -60,7 +66,7 @@ class TongHuaShunStockDzjyFetch {
     async processTableData(args) {
 
         //
-        const {page, retData} = args;
+        const {page, retData, pageSize} = args;
         //
         const dateStr = await this.date2fetch();
         //
@@ -145,10 +151,18 @@ class TongHuaShunStockDzjyFetch {
             retData.trades.push(row);
             //
             if (!retData.stockMap[code]) {
+                // random sleep
+                await this.Sugar.sleepRandom(2000, 4000);
                 const stockFetchData = await this.tongHuaShunStockDetailFetch.fetch({code});
                 retData.stockMap[code] = stockFetchData;
             }
             //
+            // 如果 retData.trades 长度大于 pageSize，则停止处理
+            if (retData.trades.length >= pageSize) {
+                hasMoreData = false;
+                break;
+            }
+
         }
         //
         return hasMoreData;
