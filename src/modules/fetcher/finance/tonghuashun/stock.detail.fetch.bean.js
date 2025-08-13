@@ -11,7 +11,7 @@ class TongHuaShunStockDetailFetch {
         await page.sleepRandom(1500, 3000);
         //
 
-        const stockBasicInfo = await this.getStockBasicInfo(page);
+        const stockBasicInfo = await this.getStockBasicInfo({page, code});
         const tenHolders = await this.getTenHolders({page, code});
 
         //
@@ -109,7 +109,11 @@ class TongHuaShunStockDetailFetch {
     }
 
 
-    async getStockBasicInfo(page) {
+    async getStockBasicInfo(args) {
+
+        const {
+            page, code
+        } = args;
 
         // 方法1: 通过选择器获取iframe
         const iframeElement = await page.getEleBySelector('#in_squote > div > div > iframe'); // 替换为实际的选择器
@@ -212,6 +216,7 @@ class TongHuaShunStockDetailFetch {
          */
 
         const stockBasicInfoConverted = {
+            code: code,
             openPrice: stockBasicInfo['今开'],
             tradingVolume: this.numberHelper.convert(stockBasicInfo['成交量'], '万'),
             amplitude: parseFloat(stockBasicInfo['振幅']),
