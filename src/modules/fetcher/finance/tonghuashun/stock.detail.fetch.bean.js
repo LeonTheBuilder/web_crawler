@@ -12,7 +12,7 @@ class TongHuaShunStockDetailFetch {
         //
 
         const stockBasicInfo = await this.getStockBasicInfo(page);
-        const tenHolders = await this.getTenHolders(page);
+        const tenHolders = await this.getTenHolders({page, code});
 
         //
         await page.close();
@@ -20,7 +20,11 @@ class TongHuaShunStockDetailFetch {
         return {stockBasicInfo, tenHolders};
     }
 
-    async getTenHolders(page) {
+    async getTenHolders(args) {
+
+        const {
+            page, code
+        } = args;
 
 
         const iframeElement = await page.getEleBySelector('#dataifm'); // 替换为实际的选择器
@@ -79,9 +83,29 @@ class TongHuaShunStockDetailFetch {
                 rowList
             };
         });
-        this.log.info(tableData);
 
-        return tableData;
+        // this.Sugar.writeFile(this.pathFinder.appGenFolder() + `/holders${code}.gen.json`, JSON.stringify(tableData));
+
+        // 取 tableData.headerTextList 的 8 - 10 条数据
+        const holderNames = tableData.headerTextList.slice(8, 18);
+        this.log.info(holderNames);
+        // 取 tableData.rowList 的前十条数据
+        const tenHolders = tableData.rowList.slice(0, 10);
+
+        let index = 0;
+        const retHolderList = [];
+        for (const holder of tenHolders) {
+            const [holdQuantity, holdChange, circulatingShareRatio, changeRatio, shareType, clickToView] = holder;
+            const holderMap = {};
+            holderMap.holdQuantity = this.numberHelper.convert(holdQuantity, "万");
+            holderMap.holdChange = holdChange;
+            holderMap.circulatingShareRatio = parseFloat(circulatingShareRatio);
+            holderMap.changeRatio = changeRatio;
+            holderMap.shareType = shareType;
+            holderMap.holderName = holderNames[index++];
+            retHolderList.push(holderMap);
+        }
+        return retHolderList;
     }
 
 
@@ -143,6 +167,9 @@ class TongHuaShunStockDetailFetch {
         });
 
 
+        this.log.info(stockBasicInfo);
+
+
         // convert map
         /**
          * 当前的 stockBasicInfo 是下面的格式
@@ -186,11 +213,11 @@ class TongHuaShunStockDetailFetch {
 
         const stockBasicInfoConverted = {
             openPrice: stockBasicInfo['今开'],
-            tradingVolume: stockBasicInfo['成交量'],
-            amplitude: stockBasicInfo['振幅'],
+            tradingVolume: this.numberHelper.convert(stockBasicInfo['成交量'], '万'),
+            amplitude: parseFloat(stockBasicInfo['振幅']),
             highestPrice: stockBasicInfo['最高'],
-            turnover: stockBasicInfo['成交额'],
-            turnoverRate: stockBasicInfo['换手'],
+            turnover: this.numberHelper.convert(stockBasicInfo['成交额'], '万'),
+            turnoverRate: parseFloat(stockBasicInfo['换手']),
             lowestPrice: stockBasicInfo['最低'],
             totalMarketValue: stockBasicInfo['总市值：亿'],
             priceToBookRatio: stockBasicInfo['市净率'],

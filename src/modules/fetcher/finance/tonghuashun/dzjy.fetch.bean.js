@@ -133,7 +133,7 @@ class TongHuaShunStockDzjyFetch {
                 price,
                 dealPrice,
                 volume,
-                premium,
+                premiumRate,
                 buyDept,
                 sellDept
             ] = row;
@@ -147,8 +147,22 @@ class TongHuaShunStockDzjyFetch {
                 hasMoreData = false;
                 break;
             }
+
+
+            const dateDate = this.Sugar.string2date(date, "YYYY-MM-DD");
+            const dateIntStr = this.Sugar.date2string(dateDate, "YYYYMMDD");
+            const dateInt = parseInt(dateIntStr);
             //
-            retData.trades.push(row);
+            retData.trades.push({
+                dateInt: dateInt,
+                stockCode: code,
+                stockName: name,
+                tradePrice: dealPrice,
+                tradeVolume: volume,
+                premiumRate: parseFloat(premiumRate),
+                buyDeptName: buyDept,
+                sellDeptName: sellDept
+            });
             //
             if (!retData.stockMap[code]) {
                 // random sleep
