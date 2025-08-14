@@ -13,8 +13,10 @@ class TongHuaShunStockDzjyFetch {
             pageSize = 10000
         } = args;
         //
-
-
+        const dateStr = await this.date2fetch();
+        const dateDate = this.Sugar.string2date(dateStr, "YYYY-MM-DD");
+        const dateIntStr = this.Sugar.date2string(dateDate, "YYYYMMDD");
+        const dateInt = parseInt(dateIntStr);
         // -----------------------------------------------------------------------
         const chrome = await this.chromeManager.getChrome({});
         const page = await chrome.newPage();
@@ -24,13 +26,17 @@ class TongHuaShunStockDzjyFetch {
         const retData = {};
         retData.stockMap = {};
         retData.trades = [];
+        retData.tradeDate = dateInt;
         // -----------------------------------------------------------------------
         let hasMoreData = true;
         while (hasMoreData) {
             // 等待加载完成
             await page.idle();
             await page.sleepRandom(3000, 4000);
-            hasMoreData = await this.processTableData({page, retData, pageSize});
+            hasMoreData = await this.processTableData({
+                //
+                page, retData, pageSize, dateStr
+            });
             //
             if (!hasMoreData) {
                 this.log.info('没有更多数据了 hasMoreData false');
@@ -66,9 +72,8 @@ class TongHuaShunStockDzjyFetch {
     async processTableData(args) {
 
         //
-        const {page, retData, pageSize} = args;
+        const {page, retData, pageSize, dateStr} = args;
         //
-        const dateStr = await this.date2fetch();
         //
         const tableData = await page.evaluate(async () => {
 
@@ -149,12 +154,9 @@ class TongHuaShunStockDzjyFetch {
             }
 
 
-            const dateDate = this.Sugar.string2date(date, "YYYY-MM-DD");
-            const dateIntStr = this.Sugar.date2string(dateDate, "YYYYMMDD");
-            const dateInt = parseInt(dateIntStr);
             //
             retData.trades.push({
-                dateInt: dateInt,
+                date: date,
                 stockCode: code,
                 stockName: name,
                 tradePrice: dealPrice,

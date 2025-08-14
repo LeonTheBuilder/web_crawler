@@ -12,12 +12,12 @@ class TongHuaShunStockDetailFetch {
         //
 
         const stockBasicInfo = await this.getStockBasicInfo({page, code});
-        const tenHolders = await this.getTenHolders({page, code});
+        const {retHolderList, holderDataUpdateDate} = await this.getTenHolders({page, code});
 
         //
         await page.close();
         //
-        return {stockBasicInfo, tenHolders};
+        return {stockBasicInfo, tenHolders: retHolderList, holderDataUpdateDate};
     }
 
     async getTenHolders(args) {
@@ -50,6 +50,21 @@ class TongHuaShunStockDetailFetch {
         //
 
 
+        // Holder data update time
+        const holderDataUpdateDate = await frame.evaluate(() => {
+            const timeLabelSelector = "#bd_1 > div.m_tab.mt15 > ul > li.cur > a";
+            const timeLabel = document.querySelector(timeLabelSelector);
+            if (timeLabel) {
+                return timeLabel.textContent.trim();
+            }
+            return null;
+        });
+
+        const dateDate = this.Sugar.string2date(holderDataUpdateDate, "YYYY-MM-DD");
+        const dateIntStr = this.Sugar.date2string(dateDate, "YYYYMMDD");
+        const holderDataUpdateDateInt = parseInt(dateIntStr);
+
+        //
         const tableData = await frame.evaluate(async () => {
             const tableSelector = '#fher_1 > table';
             //
@@ -105,7 +120,7 @@ class TongHuaShunStockDetailFetch {
             holderMap.holderName = holderNames[index++];
             retHolderList.push(holderMap);
         }
-        return retHolderList;
+        return {retHolderList, holderDataUpdateDate: holderDataUpdateDateInt};
     }
 
 
