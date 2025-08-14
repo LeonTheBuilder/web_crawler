@@ -14,6 +14,7 @@ class TongHuaShunStockDzjyFetch {
         } = args;
         //
         const dateStr = await this.date2fetch();
+        this.log.info("dateStr", dateStr)
         const dateDate = this.Sugar.string2date(dateStr, "YYYY-MM-DD");
         const dateIntStr = this.Sugar.date2string(dateDate, "YYYYMMDD");
         const dateInt = parseInt(dateIntStr);
