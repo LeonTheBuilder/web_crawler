@@ -1,4 +1,4 @@
-class httpSender {
+class HttpSender {
 
 
     async send(args) {
@@ -28,10 +28,10 @@ class httpSender {
             dataType
         } = args;
         //
-        return ["http://localhost:3015/dataService.onCrawlerData"];
+        return ["http://localhost:3015/api/outerDataService.onData"];
     }
 
 
 }
 
-module.exports = httpSender;
+module.exports = HttpSender;

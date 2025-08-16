@@ -1,13 +1,10 @@
 class UserViewController {
     index = async (ctx) => {
-        await ctx.render('index');
+        await this.vr.render(ctx, __dirname, "./views/index.ejs")
     };
     mappings = [
         ['', 'GET', this.index],
         ['/', 'GET', this.index],
-        ['/pages', 'GET', async (ctx) => {
-            await ctx.render('pages');
-        }],
     ];
 }
 

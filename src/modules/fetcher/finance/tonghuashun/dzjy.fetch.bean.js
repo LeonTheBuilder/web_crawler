@@ -185,6 +185,15 @@ class TongHuaShunStockDzjyFetch {
         return hasMoreData;
     }
 
+
+    apis = [
+        [this.fetch, async (ctx) => {
+            const args = await this.ah.ctx2args(ctx, false, false);
+            ctx.body = await this.fetch(args);
+        }],
+    ];
+
+
 }
 
 

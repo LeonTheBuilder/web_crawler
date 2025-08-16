@@ -12,7 +12,7 @@ cfg.autowire.folders = [
     __dirname,
 ];
 //----------------------------------------------------------------
-cfg.web.port = 3015;
+cfg.web.port = 3016;
 //----------------------------------------------------------------
 cfg.mysql.enabled = false;
 cfg.sqlite.enabled = true;

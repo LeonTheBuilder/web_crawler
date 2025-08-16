@@ -8,9 +8,8 @@ class TongHuaShunStockDetailFetch {
         const chrome = await this.chromeManager.getChrome({});
         const page = await chrome.newPage();
         await page.gotoUrl(`https://stockpage.10jqka.com.cn/${code}/holder/#flowholder`);
-        await page.sleepRandom(1500, 3000);
+        await page.sleepRandom(3000, 10 * 1000); // 3到10秒
         //
-
         const stockBasicInfo = await this.getStockBasicInfo({page, code});
         const {retHolderList, holderDataUpdateDate} = await this.getTenHolders({page, code});
 
@@ -30,14 +29,14 @@ class TongHuaShunStockDetailFetch {
         const iframeElement = await page.getEleBySelector('#dataifm'); // 替换为实际的选择器
         if (!iframeElement) {
             console.log('未找到iframe元素');
-            return;
+            return {};
         }
 
         // 获取iframe的框架对象
         const frame = await iframeElement.contentFrame();
         if (!frame) {
             console.log('无法获取iframe的框架对象');
-            return;
+            return {};
         }
 
         // 获取iframe的URL
@@ -57,7 +56,7 @@ class TongHuaShunStockDetailFetch {
             if (timeLabel) {
                 return timeLabel.textContent.trim();
             }
-            return null;
+            return {};
         });
 
         const dateDate = this.Sugar.string2date(holderDataUpdateDate, "YYYY-MM-DD");

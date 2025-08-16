@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "aframework": "git+https://github.com/LeonTheBuilder/aframework.git",
+    "web_resources": "git+https://github.com/LeonTheBuilder/web_resources.git",
     "cheerio": "^1.1.0",
     "puppeteer": "^24.10.0"
   }
